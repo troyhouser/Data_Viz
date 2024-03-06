@@ -1,0 +1,5 @@
+"0","gganimate::animate(info_gif)
+"
+"2","Error in animate.default(info_gif) : 
+  animation of list objects not supported
+"
