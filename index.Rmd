@@ -78,7 +78,7 @@ mycolors = rep("gray",nrow(dat))
 mycolors[dat$type=="information tech"] = "orange"
 mycolors[dat$type=="real estate"] = "blue"
 names(mycolors) = dat$type
-ggplot(dat,aes(x=x,y=close,col=type,group=Name,fill=type))+
+ggplot(dat,aes(x=x,y=close,col=type,group=reorder(Name,close),fill=type))+
   geom_line(size=2)+
   geom_point(shape=21,size=4,col="black")+
   scale_color_manual(values = mycolors)+
