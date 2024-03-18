@@ -21,6 +21,8 @@ require(corrplot)
 require(gganimate)
 require(readr)
 require(magick)
+require(plotly)
+require(dygraphs)
 
 source("utils.R")
 ps = read.csv("public_storage_dat.csv")
@@ -123,6 +125,10 @@ corrplot(cor(data_wide),methods="color",addrect=3,order="hclust")
 
 Larger sample size {data-navmenu="Paradigm Shift in Stocks"}
 =======================================
+
+Column {.sidebar}
+-----------------------------------------------------------------------
+One measure of a 'healthy' stock is the relationship between its market value and trading volume. Trading volume is the number of buys/sells in a day, and thus, if the value and volume are positively related, this means not only that the stock is valuable but that there is high public interest in it. This animation shows the relationship between value and volume for 15 information tech stocks, 15 real estate stocks, and 27 other stocks over time (2012 - 2018). We can see that info tech and real estate are more often along the diagonal (healthy) than other stock types, on average.
 
 Column {data-width=600}
 -----------------------------------------------------------------------
@@ -342,16 +348,17 @@ Column {data-width=500}
 ### Comparison of Performance to Linear Model
 
 ```{r}
-ggplot(acc,aes(x=model,y=error,fill=stock_type))+
+p1=ggplot(acc,aes(x=model,y=error,fill=stock_type))+
   geom_bar(stat="summary",position="dodge",col="black")+
   geom_errorbar(stat="summary",position=position_dodge(0.9),width=0.1)+
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black"),
-        text = element_text(size=20),axis.ticks.x = element_blank())+
+        text = element_text(size=15),axis.ticks.x = element_blank())+
   labs(y="mean squared error",x="")+
   scale_fill_viridis_d()+
   guides(fill=guide_legend(title="Stock Type"))+
   scale_y_continuous(expand=c(0,0))
+ggplotly(p1)
 ```
 
 ### Predictions for Nvidia
@@ -598,6 +605,21 @@ labeled$type = type
 pie(table(labeled$uncertainty_idx,labeled$type)[,1],col = c("gray","purple"),labels = c("EXPLOIT (6/15)","EXPLORE (9/15)"))
 ```
 
+Bitcoin Timeseries {data-navmenu="BONUS"}
+=======================================
+
+Column {data-width=600}
+-----------------------------------------------------------------------
+
+### Bitcoin value over time
+```{r}
+bitcoin = read.csv("bitcoin.csv")
+bitcoin_ts = ts(rev(bitcoin$Close.Last))
+dygraph(bitcoin_ts, main = "Bitcoin Value") %>% 
+  dyRangeSelector(dateWindow = c(bitcoin$Date[nrow(bitcoin)],
+                                 bitcoin$Date[1]))
+```
+
 Bitcoin Prediction {data-navmenu="BONUS"}
 =======================================
 
@@ -609,7 +631,7 @@ Gaussian Processes have limitations as well. It could not predict out-of-sample 
 Column {data-width=600}
 -----------------------------------------------------------------------
 
-### Change in leading stocks
+### Predicting Bitcoin
 
 ```{r}
 bitcoin = read.csv("bitcoin.csv")
